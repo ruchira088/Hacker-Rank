@@ -53,11 +53,7 @@ public class MatrixRotation implements HackerRank {
         return p_result.trim().equals(stringBuilder.toString().trim());
     }
 
-    private Object[][] rotate(Object[][] p_matrix, int p_count) {
-        return p_count == 0 ? p_matrix : rotate(rotate(p_matrix), p_count - 1);
-    }
-
-    private Object[][] rotate(Object[][] p_matrix) {
+    private Object[][] rotate(Object[][] p_matrix, int p_rotations) {
         int rows = p_matrix.length;
         int columns = p_matrix[0].length;
 
@@ -83,30 +79,35 @@ public class MatrixRotation implements HackerRank {
 
         Object[][] matrix = new Object[rows][columns];
 
-        Object[] shiftRight = shiftRight(rectangle);
+        Object[] shifted = rectangle;
+
+        for (int i = 0; i < p_rotations%rectangle.length; i++)
+        {
+            shifted = shiftRight(shifted);
+        }
 
         index = 0;
 
         for (int i = columns - 1; i >= 0; i--, index++) {
-            matrix[0][i] = shiftRight[index];
+            matrix[0][i] = shifted[index];
         }
 
         for (int i = 1; i < rows - 1; i++, index++) {
-            matrix[i][0] = shiftRight[index];
+            matrix[i][0] = shifted[index];
         }
 
         for (int i = 0; i < columns; i++, index++) {
-            matrix[rows - 1][i] = shiftRight[index];
+            matrix[rows - 1][i] = shifted[index];
         }
 
         for (int i = rows - 2; i > 0; i--, index++) {
-            matrix[i][columns - 1] = shiftRight[index];
+            matrix[i][columns - 1] = shifted[index];
         }
 
         Object[][] innerMatrix = innerMatrix(p_matrix);
 
         if (innerMatrix != null) {
-            matrixMerge(matrix, rotate(innerMatrix));
+            matrixMerge(matrix, rotate(innerMatrix, p_rotations));
         }
 
         return matrix;
